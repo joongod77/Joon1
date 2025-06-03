@@ -101,14 +101,17 @@ if 'curriculum' in st.session_state:
     if st.button("자료 보기"):
         st.info(f"{selected}에 맞는 학습 자료를 준비했어요!")
         if selected == "기초 커리큘럼":
-            st.markdown("- 수의 범위 복습
-- 음수와 양수 비교 연습
-- 기초 개념 정리 PDF 제공 예정")
+            st.markdown("""\
+- 수의 범위 복습  
+- 음수와 양수 비교 연습  
+- 기초 개념 정리 PDF 제공 예정""")
         elif selected == "응용 커리큘럼":
-            st.markdown("- 다단계 문제 풀이
-- 문제 유형별 정리
-- 응용 문제 PDF 제공 예정")
+            st.markdown("""\
+- 다단계 문제 풀이  
+- 문제 유형별 정리  
+- 응용 문제 PDF 제공 예정""")
         else:
-            st.markdown("- 고난도 문제 집중 학습
-- 서술형 대비 자료
-- 심화 문제집 PDF 제공 예정")
+            st.markdown("""\
+- 고난도 문제 집중 학습  
+- 서술형 대비 자료  
+- 심화 문제집 PDF 제공 예정""")
