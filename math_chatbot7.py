@@ -1,21 +1,16 @@
+import openai
 import streamlit as st
-import google.generativeai as genai
 
-# 🔑 여기에 Gemini API 키 붙여넣기
-genai.configure(api_key="AIzaSyD_03LuomftfGRzZugDUy54kkFfBxxMDLs")
+openai.api_key = "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"
 
-model = genai.GenerativeModel("models/gemini-1.5-pro")
+st.title("수학 과외 챗봇")
 
-st.title("수학 과외 챗봇 (Gemini 버전) 🎓")
-st.write("학년/단원을 입력하면 진단평가 문제를 자동으로 생성해드릴게요.")
+user_input = st.text_input("원하는 학습 범위를 입력하세요")
 
-user_input = st.text_input("원하는 학습 범위 예: '중1-1 정수와 유리수'")
-
-if st.button("문제 생성하기") and user_input:
+if user_input:
     with st.spinner("문제 생성 중입니다..."):
-        prompt = f"""
-        너는 수학 선생님이야. '{user_input}' 단원에 대한 진단평가 문제 3개를 만들어줘.
-        문제만 먼저 보여주고, 마지막에 정답을 한 줄씩 써줘.
-        """
-        response = model.generate_content(prompt)
-        st.write(response.text)
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": f"{user_input} 단원에 맞는 수학 문제 3개 만들어줘"}]
+        )
+        st.write(response.choices[0].message["content"])
