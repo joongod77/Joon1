@@ -12,7 +12,7 @@ if user_input:
         client = openai.OpenAI()  # 최신 버전에서는 client 객체 생성 필요
 
         response = client.chat.completions.create(
-            model="gpt-4",  # 또는 "gpt-3.5-turbo"
+            model="gpt-3.5-turbo",  # 또는 "gpt-3.5-turbo"
             messages=[
                 {"role": "user", "content": f"{user_input} 단원에 맞는 수학 문제 3개 만들어줘"},
             ]
