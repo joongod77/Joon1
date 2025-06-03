@@ -1,13 +1,9 @@
-import openai
 import streamlit as st
+import openai
 
-st.title("수학 과외 챗봇")
-
-# 비밀 키 불러오기
-api_key = st.secrets["OPENAI_API_KEY"]
-
-# client에 키 명시적으로 전달
+api_key = st.secrets["OPENAI_API_KEY"]  # 🔥 여기에 오타 나면 KeyError
 client = openai.OpenAI(api_key=api_key)
+
 
 user_input = st.text_input("원하는 학습 범위를 입력하세요")
 
