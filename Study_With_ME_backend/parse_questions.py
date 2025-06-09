@@ -1,3 +1,4 @@
+# parse_questions.py
 def parse_questions(text):
     questions = []
     current = None
@@ -20,7 +21,6 @@ def parse_questions(text):
     if current:
         questions.append(current)
 
-    # 필터링: 필수 키가 빠진 문제는 제외
     clean_questions = [
         q for q in questions
         if "question" in q and "choices" in q and "answer" in q
