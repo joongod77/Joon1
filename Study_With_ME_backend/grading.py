@@ -1,4 +1,3 @@
-
 def grade_answers(user_answers, choices, answers):
     correct_count = 0
     feedback = []
