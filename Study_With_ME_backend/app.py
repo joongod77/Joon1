@@ -9,6 +9,8 @@ st.set_page_config(page_title="STUDY with ME", layout="centered")
 # -------------------------------
 if "stage" not in st.session_state:
     st.session_state["stage"] = "start"
+if "school_type" not in st.session_state:
+    st.session_state["school_type"] = ""
 if "selected_grade" not in st.session_state:
     st.session_state["selected_grade"] = ""
 if "chapter" not in st.session_state:
@@ -22,7 +24,23 @@ if "user_answers" not in st.session_state:
 if "show_answers" not in st.session_state:
     st.session_state["show_answers"] = False
 
-# 학년별 마스코트 이미지
+# -------------------------------
+# 교육과정 데이터
+# -------------------------------
+school_to_chapters = {
+    '초등학교': {'초1': [], '초2': [], '초3': [], '초4': [], '초5': [], '초6': []},
+    '중학교': {
+        '중1': ['도형과 측정', '변화와 관계', '수와연산', '자료와 가능성'],
+        '중2': ['도형과 측정', '변화와 관계', '수와연산', '자료와 가능성'],
+        '중3': ['변화와 관계', '수와 연산', '자료와 가능성']
+    },
+    '고등학교': {
+        '고1': ['경우의 수', '다항식', '도형의 방정식', '방정식과 부등식 ', '집합과 명제', '함수와 그래프', '행렬'],
+        '고2': ['경우의 수', '미분법', '삼각함수', '수열', '적분법', '지수함수와 로그함수', '통계', '함수의 극한과 연속', '확률'],
+        '고3': ['공간도형과 공간좌표', '미분법의 심화', '벡터', '수열의 극한', '이차곡선', '적분법의 심화']
+    }
+}
+
 mascots = {
     "초1": "https://cdn-icons-png.flaticon.com/512/4140/4140048.png",
     "초2": "https://cdn-icons-png.flaticon.com/512/4140/4140051.png",
@@ -38,9 +56,6 @@ mascots = {
     "고3": "https://cdn-icons-png.flaticon.com/512/4140/4140042.png"
 }
 
-# -------------------------------
-# 시작 화면
-# -------------------------------
 page_bg = """
 <style>
 body {
@@ -58,6 +73,9 @@ body {
 """
 st.markdown(page_bg, unsafe_allow_html=True)
 
+# -------------------------------
+# 시작 화면
+# -------------------------------
 if st.session_state["stage"] == "start":
     st.image("https://cdn-icons-png.flaticon.com/512/888/888879.png", width=100)
     st.title("🌸스윗미 : STUDY with ME 🌸")
@@ -68,38 +86,43 @@ if st.session_state["stage"] == "start":
     st.stop()
 
 # -------------------------------
-# 학년 선택 화면
+# 학교급/학년 선택
 # -------------------------------
 elif st.session_state["stage"] == "grade":
-    st.markdown("## 🐥 학년을 선택하세요")
-    grade_list = [
-        "초1", "초2", "초3", "초4", "초5", "초6",
-        "중1", "중2", "중3",
-        "고1", "고2", "고3"
-    ]
+    st.markdown("## 🐥 학교급과 학년을 선택하세요")
+    school_type = st.selectbox("학교급을 선택하세요", ["초등학교", "중학교", "고등학교"])
 
-    for grade in grade_list:
-        col1, col2 = st.columns([1, 5])
-        with col1:
-            st.image(mascots.get(grade, ""), width=60)
-        with col2:
-            if st.button(f"{grade} 선택하기"):
-                st.session_state["selected_grade"] = grade
-                st.session_state["stage"] = "chapter"
-                st.rerun()
+    if school_type == "초등학교":
+        grade_options = [f"초{i}" for i in range(1, 7)]
+    elif school_type == "중학교":
+        grade_options = [f"중{i}" for i in range(1, 4)]
+    else:
+        grade_options = [f"고{i}" for i in range(1, 4)]
 
-# -------------------------------
-# 단원 입력 화면 → 로딩 페이지로 이동
-# -------------------------------
-elif st.session_state["stage"] == "chapter":
-    st.markdown(f"### ✏️ 선택한 학년: **{st.session_state['selected_grade']}**")
-    chapter = st.text_input("단원을 입력하세요 (예: 함수, 분수의 덧셈 등)", value=st.session_state["chapter"])
+    selected_grade = st.selectbox("학년을 선택하세요", grade_options)
 
-    if st.button("진단평가 시작"):
-        st.session_state["chapter"] = chapter
-        st.session_state["stage"] = "loading"
+    if st.button("학년 선택 완료"):
+        st.session_state["school_type"] = school_type
+        st.session_state["selected_grade"] = selected_grade
+        st.session_state["stage"] = "chapter"
         st.rerun()
 
+# -------------------------------
+# 단원 선택
+# -------------------------------
+elif st.session_state["stage"] == "chapter":
+    grade = st.session_state["selected_grade"]
+    school_type = st.session_state["school_type"]
+
+    st.markdown(f"### ✏️ 선택한 학년: **{grade}**")
+    chapters = school_to_chapters[school_type].get(grade, [])
+    selected_chapter = st.selectbox("단원을 선택하세요", chapters)
+
+    if st.button("진단평가 시작"):
+        st.session_state["chapter"] = selected_chapter
+        st.session_state["stage"] = "loading"
+        st.rerun()
+        
 # -------------------------------
 # 로딩 화면 → 문제 생성 후 퀴즈로 이동
 # -------------------------------
